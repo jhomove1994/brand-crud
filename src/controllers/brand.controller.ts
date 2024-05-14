@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import { BrandService } from '../services/brand.service';
 import { Brand } from '../entities/brand.entity';
-import { CreateBrandMapper, GetBrandMapper } from '../mappers/brand.mapper';
+import {
+    CreateBrandMapper,
+    GetBrandMapper,
+    UpdateBrandMapper,
+} from '../mappers/brand.mapper';
 import { validateOrReject } from 'class-validator';
 import { SUCCESS } from '../utilities/messages.utilities';
 import { ApiResponse } from '../models/general.model';
@@ -37,6 +41,25 @@ export class BrandController {
             return res.status(201).json({
                 message: SUCCESS.RESOURCE_CREATED.replace('$s', 'Brand'),
                 data: newBrand,
+            });
+        } catch (error: any) {
+            return handleError(error, res);
+        }
+    };
+
+    Update = async ({ body, params }: Request, res: Response) => {
+        if (!params.id || isNaN(Number(params.id))) {
+            throw new Error('Invalid ID');
+        }
+        const brand = UpdateBrandMapper(body);
+        try {
+            const updatedBrand = await this.brandService.Update({
+                ...brand,
+                id: Number(params.id),
+            } as Brand & { id: number });
+            return res.status(200).json({
+                message: SUCCESS.RESOURCE_UPDATED.replace('$s', 'Brand'),
+                data: updatedBrand,
             });
         } catch (error: any) {
             return handleError(error, res);

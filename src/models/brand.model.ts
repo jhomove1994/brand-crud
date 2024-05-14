@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, IsNumber } from 'class-validator';
 import { Filter } from './filter.model';
 
 export class CreateBrand {
@@ -8,8 +8,8 @@ export class CreateBrand {
     @IsString()
     address: string;
 
-    @IsString()
-    phone: string;
+    @IsNumber()
+    phone: number;
 
     @IsString()
     @IsEmail()
